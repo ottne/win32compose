@@ -9,8 +9,6 @@ import kotlinx.cinterop.invoke
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
 import kotlinx.coroutines.*
-import platform.windows.GetCurrentThread
-import platform.windows.GetCurrentThreadId
 import platform.windows.MSG
 import platform.windows.TranslateMessage
 

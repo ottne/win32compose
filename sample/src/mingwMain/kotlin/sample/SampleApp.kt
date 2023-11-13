@@ -4,7 +4,10 @@ package sample
 
 import androidx.compose.runtime.*
 import kotlinx.cinterop.*
-import platform.windows.*
+import sample.Button
+import sample.Label
+import sample.ListBox
+import sample.Window
 
 
 @Composable
