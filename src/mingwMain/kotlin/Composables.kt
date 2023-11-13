@@ -2,10 +2,16 @@ package sample
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
+import androidx.compose.runtime.currentCompositeKeyHash
+import androidx.compose.runtime.remember
 import kotlinx.cinterop.*
 import platform.windows.*
 
 private const val WindowDefault = CW_USEDEFAULT
+
+class WindowScope internal constructor(
+    internal val hwnd: HWND
+)
 
 @Composable
 fun Window(
@@ -14,28 +20,35 @@ fun Window(
     y: Int = WindowDefault,
     width: Int = WindowDefault,
     height: Int = WindowDefault,
-    content: @Composable () -> Unit
+    content: @Composable WindowScope.() -> Unit
 ) {
+    val node = remember {
+        WindowNode(
+            x = x,
+            y = y,
+            width = width,
+            height = height
+        )
+    }
+
+    val windowScope = remember(node) { WindowScope(node.hwnd) }
     ComposeNode<WindowNode, WindowsApplier>(
         factory = {
-            WindowNode(
-                x = x,
-                y = y,
-                width = width,
-                height = height
-            )
+            node
         },
         update = {
             set(title) {
                 this.title = it
             }
         },
-        content = content
+        content =  {
+            windowScope.content()
+        }
     )
 }
 
 @Composable
-fun Button(
+fun WindowScope.Button(
     title: String? = null,
     x: Int,
     y: Int,
@@ -43,12 +56,14 @@ fun Button(
     height: Int,
     onClick: (() -> Unit)? = null
 ) {
+    val key = currentCompositeKeyHash
     ComposeNode<ChildNode, WindowsApplier>(
         factory = {
             ChildNode(
+                parentHwnd = hwnd,
                 className = "BUTTON",
-                style = WS_TABSTOP or WS_VISIBLE or WS_CHILD,
-                exStyle = WS_EX_CLIENTEDGE,
+                style = WS_TABSTOP or WS_VISIBLE or WS_CHILD or BS_PUSHBUTTON,
+                exStyle = 0,
                 x = x,
                 y = y,
                 width = width,
@@ -88,7 +103,7 @@ fun Button(
 }
 
 @Composable
-fun Label(
+fun WindowScope.Label(
     title: String? = null,
     x: Int,
     y: Int,
@@ -98,6 +113,7 @@ fun Label(
     ComposeNode<ChildNode, WindowsApplier>(
         factory = {
             ChildNode(
+                parentHwnd = hwnd,
                 className = "STATIC",
                 style = WS_VISIBLE or WS_CHILD or SS_LEFT,
                 x = x,
@@ -128,7 +144,7 @@ fun Label(
 }
 
 @Composable
-fun ListBox(
+fun WindowScope.ListBox(
     items: List<String>,
     x: Int,
     y: Int,
@@ -138,6 +154,7 @@ fun ListBox(
     ComposeNode<ChildNode, WindowsApplier>(
         factory = {
             ChildNode(
+                parentHwnd = hwnd,
                 className = "LISTBOX",
                 style = WS_CHILD or WS_VISIBLE or ES_AUTOVSCROLL,
                 exStyle = WS_EX_CLIENTEDGE,
