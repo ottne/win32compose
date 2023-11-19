@@ -2,7 +2,6 @@ package sample
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
-import androidx.compose.runtime.currentCompositeKeyHash
 import androidx.compose.runtime.remember
 import kotlinx.cinterop.*
 import platform.windows.*
@@ -56,7 +55,6 @@ fun WindowScope.Button(
     height: Int,
     onClick: (() -> Unit)? = null
 ) {
-    val key = currentCompositeKeyHash
     ComposeNode<ChildNode, WindowsApplier>(
         factory = {
             ChildNode(
@@ -76,15 +74,17 @@ fun WindowScope.Button(
                         bi.uAlign = BUTTON_IMAGELIST_ALIGN_LEFT.toUInt()
                         SendMessage(hButton, BCM_SETIMAGELIST.toUInt(), 0UL, bi.ptr.rawValue.toLong())
                     }
+                },
+                onCommand = { _, command ->
+                    if (command == BN_CLICKED) {
+                        onClick?.invoke()
+                    }
                 }
             )
         },
         update = {
             set(title) {
                 this.title = it
-            }
-            set(onClick) {
-                this.onClick = it
             }
             set(x) {
                 this.x = x
@@ -149,14 +149,15 @@ fun WindowScope.ListBox(
     x: Int,
     y: Int,
     width: Int,
-    height: Int
+    height: Int,
+    onSelectIndex: ((index: Int) -> Unit)? = null
 ) {
     ComposeNode<ChildNode, WindowsApplier>(
         factory = {
             ChildNode(
                 parentHwnd = hwnd,
                 className = "LISTBOX",
-                style = WS_CHILD or WS_VISIBLE or ES_AUTOVSCROLL,
+                style = WS_CHILD or WS_VISIBLE or WS_VSCROLL or LBS_NOTIFY,
                 exStyle = WS_EX_CLIENTEDGE,
                 x = x,
                 y = y,
@@ -172,6 +173,14 @@ fun WindowScope.ListBox(
                                 wParam = 0u,
                                 lParam = pinnedItem.addressOf(0).toLong()
                             )
+                        }
+                    }
+                },
+                onCommand = { hChild, cmdCode ->
+                    if (cmdCode == LBN_SELCHANGE) {
+                        val selectedIndex = SendMessage(hChild, LB_GETCURSEL.toUInt(), 0u, 0).toInt()
+                        if (selectedIndex != LB_ERR) {
+                            onSelectIndex?.invoke(selectedIndex)
                         }
                     }
                 }

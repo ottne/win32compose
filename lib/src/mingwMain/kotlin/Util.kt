@@ -53,6 +53,10 @@ fun makeLParam(wparam: Long, lparam: Long): ULong {
     return ((lparam shl 16) or wparam).toULong()
 }
 
-fun Int.loword(): Short {
-    return (this and 0xFFFF).toShort()
+fun WPARAM.loword(): Short {
+    return (this.toInt() and 0xFFFF).toShort()
+}
+
+fun WPARAM.hiword(): Short {
+    return (this shr 16).toShort()
 }

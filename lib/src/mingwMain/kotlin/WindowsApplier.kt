@@ -243,7 +243,8 @@ class ChildNode(
     width: Int,
     height: Int,
     private val initialTitle: String? = null,
-    private val onCustomizeWidget: ((hwnd: HWND) -> Unit)? = null
+    private val onCustomizeWidget: ((hwnd: HWND) -> Unit)? = null,
+    val onCommand: ((hChild: HWND, notificationCode: Int) -> Unit)? = null
 ) : WindowsNode() {
 
     private var hChild: HWND
@@ -297,9 +298,6 @@ class ChildNode(
             }
         }
 
-
-    var onClick: (() -> Unit)? = null
-
     private fun updatePositionIfNecessary() {
         SetWindowPos(
             hWnd = hChild,
@@ -339,13 +337,11 @@ class ChildNode(
         return hChild
     }
 
-    internal override fun onReceiveMsg(msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {
+    override fun onReceiveMsg(msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {
 
         when (msg.toInt()) {
             WM_COMMAND -> {
-                if (wParam == BN_CLICKED.toULong()) {
-                    onClick?.invoke()
-                }
+                onCommand?.invoke(hChild, wParam.hiword().toInt())
             }
             else -> return DefWindowProc(hChild, msg, wParam, lParam)
         }

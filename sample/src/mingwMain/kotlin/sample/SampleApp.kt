@@ -51,6 +51,17 @@ fun SampleApp() {
             }
         )
 
+        var selectedListIndex by remember {
+            mutableStateOf<Int?>(null)
+        }
+        Label(
+            title = "Selected index: ${selectedListIndex ?: "none"}",
+            x = 150,
+            y = 300,
+            width = 130,
+            height = 20
+        )
+
         val listItems = remember {
             List(50) { i ->
                 "Item $i"
@@ -62,6 +73,9 @@ fun SampleApp() {
             y = 300,
             width = 150,
             height = 200,
+            onSelectIndex = {
+                selectedListIndex = it
+            }
         )
     }
 }
