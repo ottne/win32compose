@@ -5,11 +5,6 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-repositories {
-    mavenCentral()
-}
-
-
 kotlin {
     mingwX64("mingw") {
     }
