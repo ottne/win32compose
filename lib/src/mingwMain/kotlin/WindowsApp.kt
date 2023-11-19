@@ -20,7 +20,7 @@ internal val clock = BroadcastFrameClock(onNewAwaiters = {
 fun runWindowsApp(
     content: @Composable () -> Unit
 ) = runBlocking {
-    launch {
+    val snapshotJob = launch {
         SnapshotManager.ensureStarted()
     }
 
@@ -47,4 +47,7 @@ fun runWindowsApp(
             yield()
         }
     }
+
+    job.cancel()
+    snapshotJob.cancel()
 }
