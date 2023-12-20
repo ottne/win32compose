@@ -117,7 +117,7 @@ class WindowNode(
                 dwExStyle = WS_EX_CLIENTEDGE.toUInt(),
                 lpClassName = windowClassName,
                 lpWindowName = "Win32 C Window application by Danni Otterbach",
-                dwStyle = (WS_OVERLAPPED or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX or WS_THICKFRAME).toUInt(),
+                dwStyle = (WS_OVERLAPPED or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX).toUInt(),
                 X = x,
                 Y = y,
                 nWidth = width,
@@ -243,8 +243,9 @@ class ChildNode(
     width: Int,
     height: Int,
     private val initialTitle: String? = null,
-    private val onCustomizeWidget: ((hwnd: HWND) -> Unit)? = null,
-    val onCommand: ((hChild: HWND, notificationCode: Int) -> Unit)? = null
+    private val onWidgetCreated: ((hwnd: HWND) -> Unit)? = null,
+    val onCommand: ((hChild: HWND, notificationCode: Int, lParam: LPARAM) -> Unit)? = null,
+    val onNotify: ((hChild: HWND, nmhdr: NMHDR) -> Unit)? = null
 ) : WindowsNode() {
 
     private var hChild: HWND
@@ -332,7 +333,7 @@ class ChildNode(
 
         setFont(hChild)
 
-        onCustomizeWidget?.invoke(hChild)
+        onWidgetCreated?.invoke(hChild)
 
         return hChild
     }
@@ -341,7 +342,11 @@ class ChildNode(
 
         when (msg.toInt()) {
             WM_COMMAND -> {
-                onCommand?.invoke(hChild, wParam.hiword().toInt())
+                onCommand?.invoke(hChild, wParam.hiword().toInt(), lParam)
+            }
+            WM_NOTIFY -> {
+                val nmhdr: NMHDR = lParam.toCPointer<NMHDR>()!![0]
+                onNotify?.invoke(hChild, nmhdr)
             }
             else -> return DefWindowProc(hChild, msg, wParam, lParam)
         }
@@ -407,11 +412,18 @@ private fun WndProc(hwnd: HWND?, msg: UINT, wParam: WPARAM, lParam: LPARAM): LRE
     // This switch block differentiates between the message type that could have been received. If you want to
     // handle a specific type of message in your application, just define it in this block.
 
-    val targetHwnd = if (msg.toInt() == WM_COMMAND) {
-        // todo need to check for accelerator or menu here in wParam high word
-        lParam.toCPointer()
-    } else {
-        hwnd
+    val targetHwnd = when (msg.toInt()) {
+        WM_COMMAND -> {
+            // todo need to check for accelerator or menu here in wParam high word
+            lParam.toCPointer()
+        }
+        WM_NOTIFY -> {
+            val nmhdr: NMHDR = lParam.toCPointer<NMHDR>()!![0]
+            nmhdr.hwndFrom
+        }
+        else -> {
+            hwnd
+        }
     }
 
     val node = (GetWindowLongPtr!!)(targetHwnd, GWLP_USERDATA).toCPointer<CPointed>()?.asStableRef<WindowsNode>()?.get()

@@ -21,10 +21,17 @@ fun SampleApp() {
         width = 500,
         height = 600,
     ) {
+        TabControl(
+            0, 0, 500, 600,
+            onSelectIndex = { selectedIndex ->
+                println("Selected tab: $selectedIndex")
+            }
+        )
+
         Label(
             title = "Hello world!",
             x = counter1,
-            y = 60,
+            y = 160,
             width = 100,
             height = 30,
         )
@@ -32,7 +39,7 @@ fun SampleApp() {
         Button(
             title = "Button1: $counter1",
             x = 0,
-            y = 0,
+            y = 100,
             width = 100,
             height = 50,
             onClick = {
@@ -43,7 +50,7 @@ fun SampleApp() {
         Button(
             title = "Button2: $counter2",
             x = 120,
-            y = 0,
+            y = 100,
             width = 100,
             height = 50,
             onClick = {
@@ -68,7 +75,10 @@ fun SampleApp() {
             }
         }
         ListBox(
-            items = listItems,
+            listItems.size,
+            title = { i ->
+                listItems[i]
+            },
             x = 300,
             y = 300,
             width = 150,
