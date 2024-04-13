@@ -1,15 +1,7 @@
-@file:OptIn(ExperimentalForeignApi::class)
-
-package sample
+package de.danotter.composewin32.sample
 
 import androidx.compose.runtime.*
-import kotlinx.cinterop.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import sample.Button
-import sample.Label
-import sample.ListBox
-import sample.Window
+import de.danotter.composewin32.*
 
 
 @Composable

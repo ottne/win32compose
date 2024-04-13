@@ -1,10 +1,9 @@
 @file:OptIn(ExperimentalForeignApi::class)
 
-package sample
+package de.danotter.composewin32
 
 import kotlinx.cinterop.*
 import platform.windows.*
-import kotlin.native.concurrent.ThreadLocal
 
 val SendMessage = (platform.windows.SendMessage)!!
 val GetMessage = (platform.windows.GetMessage)!!

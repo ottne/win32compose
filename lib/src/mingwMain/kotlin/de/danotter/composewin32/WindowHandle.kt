@@ -1,4 +1,4 @@
-package sample
+package de.danotter.composewin32
 
 import kotlinx.cinterop.*
 import platform.windows.*

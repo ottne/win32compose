@@ -26,7 +26,7 @@ kotlin {
         binaries {
             executable {
                 // Change to specify fully qualified name of your application"s entry point:
-                entryPoint = "sample.main"
+                entryPoint = "de.danotter.composewin32.sample.main"
                 // Specify command-line arguments, if necessary:
                 runTask?.args("")
                 linkerOpts("-Wl,--subsystem,windows")
@@ -40,10 +40,13 @@ kotlin {
             }
         }
     }
+
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
         // Note: To enable common source sets please comment out "kotlin.import.noCommonSourceSets" property
         // in gradle.properties file and re-import your project in IDE.
-        val mingwMain by getting {
+        mingwMain.configure {
             dependencies {
                 implementation(project(":lib"))
                 implementation(compose.runtime)
@@ -51,7 +54,7 @@ kotlin {
 
             resources.srcDir("src/mingwMain/resources")
         }
-        val mingwTest by getting {
+        mingwTest.configure {
         }
     }
 }

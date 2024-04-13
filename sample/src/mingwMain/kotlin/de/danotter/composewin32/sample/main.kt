@@ -1,7 +1,8 @@
-package sample
+package de.danotter.composewin32.sample
 
 import kotlinx.cinterop.*
 import platform.windows.*
+import de.danotter.composewin32.runWindowsApp
 
 fun main() {
 

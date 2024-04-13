@@ -6,17 +6,19 @@ plugins {
 }
 
 kotlin {
-    mingwX64("mingw") {
-    }
+    mingwX64("mingw")
+
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
-        val mingwMain by getting {
+        mingwMain.configure {
             dependencies {
                 implementation(compose.runtime)
             }
 
             resources.srcDir("src/mingwMain/resources")
         }
-        val mingwTest by getting {
+        mingwTest {
         }
     }
 }
@@ -28,7 +30,7 @@ kotlin {
 tasks.named("compileKotlinMingw", KotlinCompilationTask::class.java) {
     compilerOptions {
         freeCompilerArgs.addAll(
-                "-Xopt-in=kotlinx.cinterop.ExperimentalForeignApi",
+            "-Xopt-in=kotlinx.cinterop.ExperimentalForeignApi",
         )
     }
 }

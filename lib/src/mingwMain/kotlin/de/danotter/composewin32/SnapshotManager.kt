@@ -1,4 +1,4 @@
-package sample
+package de.danotter.composewin32
 
 import androidx.compose.runtime.snapshots.Snapshot
 import kotlinx.atomicfu.atomic
