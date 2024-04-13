@@ -25,30 +25,6 @@ fun getCurrentTimeNanoseconds(): Long = memScoped {
     return (count.toDouble() / freq.toDouble() * 1_000_000_000).toLong()
 }
 
-
-// https://stackoverflow.com/q/59707350/823483
-@ThreadLocal
-private val childWindowList: MutableList<HWND> = mutableListOf()
-
-fun getChildWindows(hwnd: HWND): List<HWND> {
-
-    childWindowList.clear()
-
-    EnumChildWindows(
-        hwnd,
-        staticCFunction { hChild, _ ->
-            if (hChild != null) {
-                childWindowList.add(hChild)
-            }
-
-            TRUE
-        },
-        0
-    )
-
-    return childWindowList.toList()
-}
-
 fun makeLParam(wparam: Long, lparam: Long): ULong {
     return ((lparam shl 16) or wparam).toULong()
 }

@@ -7,7 +7,7 @@ import platform.windows.*
 private const val WindowDefault = CW_USEDEFAULT
 
 class WindowScope internal constructor(
-    internal val hwnd: HWND
+    internal val windowHandle: WindowHandle
 )
 
 @Composable
@@ -28,7 +28,7 @@ fun Window(
         )
     }
 
-    val windowScope = remember(node) { WindowScope(node.hwnd) }
+    val windowScope = remember(node) { WindowScope(node.windowHandle) }
     ComposeNode<WindowNode, WindowsApplier>(
         factory = {
             node
@@ -56,7 +56,7 @@ fun WindowScope.Button(
     ComposeNode<ChildNode, WindowsApplier>(
         factory = {
             ChildNode(
-                parentHwnd = hwnd,
+                parentHwnd = windowHandle.rawValue,
                 className = "BUTTON",
                 style = WS_TABSTOP or WS_VISIBLE or WS_CHILD or BS_PUSHBUTTON,
                 exStyle = 0,
@@ -111,7 +111,7 @@ fun WindowScope.Label(
     ComposeNode<ChildNode, WindowsApplier>(
         factory = {
             ChildNode(
-                parentHwnd = hwnd,
+                parentHwnd = windowHandle.rawValue,
                 className = "STATIC",
                 style = WS_VISIBLE or WS_CHILD or SS_LEFT,
                 x = x,
@@ -173,7 +173,7 @@ fun WindowScope.ListBox(
     ComposeNode<ChildNode, WindowsApplier>(
         factory = {
             ChildNode(
-                parentHwnd = hwnd,
+                parentHwnd = windowHandle.rawValue,
                 className = "LISTBOX",
                 style = WS_CHILD or WS_VISIBLE or WS_VSCROLL or LBS_NOTIFY,
                 exStyle = WS_EX_CLIENTEDGE,
@@ -223,7 +223,7 @@ fun WindowScope.TabControl(
     ComposeNode<ChildNode, WindowsApplier>(
         factory = {
             ChildNode(
-                hwnd,
+                windowHandle.rawValue,
                 className = WC_TABCONTROLA,
                 style = WS_CHILD or WS_VISIBLE,
                 exStyle = 0,
