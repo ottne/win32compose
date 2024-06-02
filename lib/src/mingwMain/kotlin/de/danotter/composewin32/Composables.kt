@@ -269,3 +269,61 @@ fun WindowScope.TabControl(
         }
     )
 }
+@Composable
+fun WindowScope.CheckBox(
+    rect: Rect,
+    title: String? = null,
+    isChecked: Boolean,
+    onCheckedChange: () -> Unit
+) {
+    LaunchedEffect(isChecked) {
+
+    }
+
+    ComposeNode<ChildNode, WindowsApplier>(
+        factory = {
+            ChildNode(
+                parentHwnd = windowHandle.rawValue,
+                className = "BUTTON",
+                style = WS_TABSTOP or WS_VISIBLE or WS_CHILD or BS_AUTOCHECKBOX,
+                exStyle = 0,
+                x = rect.x,
+                y = rect.y,
+                width = rect.width,
+                height = rect.height,
+                initialTitle = title,
+                onWidgetCreated = { hButton ->
+                    memScoped {
+                        val bi: BUTTON_IMAGELIST = alloc()
+                        bi.himl = null
+                        bi.uAlign = BUTTON_IMAGELIST_ALIGN_LEFT.toUInt()
+                        SendMessage(hButton, BCM_SETIMAGELIST.toUInt(), 0UL, bi.ptr.rawValue.toLong())
+                    }
+                },
+                onCommand = { _, command, _ ->
+                    if (command == BN_CLICKED) {
+                        onCheckedChange.invoke()
+                    }
+                },
+            )
+        },
+        update = {
+            set(title) {
+                this.title = it
+            }
+            set(rect) {
+                this.x = rect.x
+                this.y = rect.y
+                this.width = rect.width
+                this.height = rect.height
+            }
+        }
+    )
+}
+
+data class Rect(
+    val x: Int,
+    val y: Int,
+    val width: Int,
+    val height: Int
+)

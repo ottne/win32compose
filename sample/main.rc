@@ -7,13 +7,13 @@ BEGIN
   BEGIN
     BLOCK "080904E4"
     BEGIN
-      VALUE "CompanyName", "JetBrains LLC"
-      VALUE "FileDescription", "Tetris Demo Game"
+      VALUE "CompanyName", "Danni Otterbach"
+      VALUE "FileDescription", "Win32Compose Sample App"
       VALUE "FileVersion", "1.0"
-      VALUE "InternalName", "Tetris"
-      VALUE "LegalCopyright", "©JetBrains"
-      VALUE "OriginalFilename", "Tetris.exe"
-      VALUE "ProductName", "Tetris for Windows"
+      VALUE "InternalName", "Win32Compose Sample App"
+      VALUE "LegalCopyright", "©Danni Otterbach"
+      VALUE "OriginalFilename", "win32compose.exe"
+      VALUE "ProductName", "Win32Compose Sample App"
       VALUE "ProductVersion", "1.0"
     END
   END

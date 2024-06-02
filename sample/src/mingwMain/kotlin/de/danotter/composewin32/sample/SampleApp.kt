@@ -12,6 +12,8 @@ fun SampleApp() {
 
     var selectedTab by remember { mutableIntStateOf(0) }
 
+    var showDetailWindow by remember { mutableStateOf(false) }
+
     Window(
         title = "Compose Win32",
         width = 500,
@@ -37,7 +39,7 @@ fun SampleApp() {
 
             Button(
                 title = "Button1: $counter1",
-                x = 0,
+                x = 20,
                 y = 100,
                 width = 100,
                 height = 50,
@@ -48,12 +50,23 @@ fun SampleApp() {
 
             Button(
                 title = "Button2: $counter2",
-                x = 120,
+                x = 140,
                 y = 100,
                 width = 100,
                 height = 50,
                 onClick = {
                     counter2++
+                }
+            )
+
+            Button(
+                title = "Open detail window",
+                x = 20,
+                y = 300,
+                width = 100,
+                height = 30,
+                onClick = {
+                    showDetailWindow = true
                 }
             )
         }
@@ -88,15 +101,52 @@ fun SampleApp() {
                     selectedListIndex = it
                 }
             )
+
+            var isChecked by remember { mutableStateOf(false) }
+            CheckBox(
+                rect = Rect(
+                    x = 100,
+                    y = 100,
+                    width = 150,
+                    height = 30
+                ),
+                isChecked = false,
+                title = "Checkbox (${if (isChecked) "checked" else "unchecked"})",
+                onCheckedChange = {
+                    isChecked = !isChecked
+                }
+            )
         }
 
         when (selectedTab) {
             0 -> {
                 firstTab()
             }
+
             1 -> {
                 secondTab()
             }
         }
+    }
+
+    if (showDetailWindow) {
+        SecondWindow()
+    }
+}
+
+@Composable
+fun SecondWindow() {
+    Window(
+        title = "Detail window",
+        width = 200,
+        height = 100
+    ) {
+        Label(
+            "Second window content",
+            0,
+            0,
+            100,
+            100
+        )
     }
 }

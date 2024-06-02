@@ -1,6 +1,7 @@
 package de.danotter.composewin32
 
 import androidx.compose.runtime.AbstractApplier
+import kotlinx.atomicfu.atomic
 import kotlinx.cinterop.*
 import platform.windows.*
 
@@ -62,6 +63,8 @@ class ApplicationNode : WindowsNode() {
     }
 }
 
+private var registeredWindowClassesCounter = atomic(0L)
+
 class WindowNode(
     x: Int = CW_USEDEFAULT,
     y: Int = CW_USEDEFAULT,
@@ -81,7 +84,7 @@ class WindowNode(
     }
 
     private fun createAndShowWindow(x: Int, y: Int, width: Int, height: Int): HWND {
-        val windowClassName = "ComposedWindow"
+        val windowClassName = "ComposedWindow_${registeredWindowClassesCounter.getAndIncrement()}"
         val success = memScoped {
             val hInstance = GetModuleHandle(null)
 
@@ -106,7 +109,7 @@ class WindowNode(
             // the window class should be created and no error is returned.
             RegisterClassEx(wc.ptr) != 0u.toUShort()
         }
-        check(success) { "Failed registering window class" }
+        check(success) { "Failed registering window class: ${getLastError()}" }
 
         val hInstance = GetModuleHandle(null)
         val hwnd = requireNotNull(
@@ -204,7 +207,11 @@ class WindowNode(
             // This message type is part of the WM_CLOSE case. After the DestroyWindow(hwnd) function is called, a
             // WM_DESTROY message is sent to the window, which actually closes it.
             WM_DESTROY -> {
-                PostQuitMessage(0)
+                val windowCount = registeredWindowClassesCounter.decrementAndGet()
+                println("destroyed window: $windowCount")
+                if (windowCount == 0L) {
+                    PostQuitMessage(0)
+                }
             }
 
             WM_TIMER -> {
