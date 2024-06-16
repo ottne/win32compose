@@ -18,6 +18,7 @@ pluginManagement {
         kotlin("jvm").version(kotlinVersion)
         kotlin("multiplatform").version(kotlinVersion)
 
+        id("org.jetbrains.kotlin.plugin.compose").version(kotlinVersion)
         id("org.jetbrains.compose").version(composeVersion)
     }
 }

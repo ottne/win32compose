@@ -368,10 +368,10 @@ private fun setFont(hChild: HWND) = memScoped {
     val metrics = alloc<NONCLIENTMETRICS>()
     metrics.cbSize = sizeOf<NONCLIENTMETRICS>().toUInt()
 
-    SystemParametersInfo?.invoke(
+    SystemParametersInfo(
         SPI_GETNONCLIENTMETRICS.toUInt(),
         sizeOf<NONCLIENTMETRICS>().toUInt(),
-        metrics.reinterpret(),
+        metrics.ptr.reinterpret(),
         0u
     )
 

@@ -13,6 +13,7 @@ val DispatchMessage = (platform.windows.DispatchMessage)!!
 val DefWindowProc = (platform.windows.DefWindowProc)!!
 val GetModuleHandle = (platform.windows.GetModuleHandle)!!
 val RegisterClassEx = (platform.windows.RegisterClassEx)!!
+val SystemParametersInfo = (platform.windows.SystemParametersInfo)!!
 
 fun getCurrentTimeNanoseconds(): Long = memScoped {
     val counter = alloc<LARGE_INTEGER>()
