@@ -59,9 +59,6 @@ fun getLastError(): String? {
 
             return message
         } else {
-
-            //MessageBoxW(null, "$functionName failed with error $errorCode: Unknown error", "Error", MB_OK)
-
             fprintf_s(fdopen(2, "w"), "Unknown error")
             return null
         }

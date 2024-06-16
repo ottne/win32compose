@@ -12,7 +12,6 @@ class WindowsApplier(root: WindowsNode) : AbstractApplier<WindowsNode>(root) {
     }
 
     override fun insertTopDown(index: Int, instance: WindowsNode) {
-        println("Inserting $instance at index $index into $current")
         current.insert(index, instance)
     }
 
@@ -21,12 +20,10 @@ class WindowsApplier(root: WindowsNode) : AbstractApplier<WindowsNode>(root) {
     }
 
     override fun onClear() {
-        println("Clearing $current")
         current.clear()
     }
 
     override fun remove(index: Int, count: Int) {
-        println("Removing $count elements at $index from $current")
         current.remove(index, count)
     }
 }
@@ -63,7 +60,7 @@ class ApplicationNode : WindowsNode() {
     }
 }
 
-private var registeredWindowClassesCounter = atomic(0L)
+private val registeredWindowClassesCounter = atomic(0L)
 
 class WindowNode(
     x: Int = CW_USEDEFAULT,
@@ -327,7 +324,6 @@ class ChildNode(
                 lpClassName = className,
                 lpWindowName = initialTitle,
                 dwStyle = style.toUInt(),
-                //dwStyle = (WS_TABSTOP or WS_VISIBLE or WS_CHILD).toUInt(),
                 X = x, Y = y,
                 nWidth = width, nHeight = height,
                 hWndParent = hParent,
